@@ -1,0 +1,38 @@
+---
+# tasks file for aws_v
+- name: ssh permission
+  ec2_group:
+   name: aws
+   aws_access_key: "{{ aws_access_key }}"
+   aws_secret_key: "{{ aws_secret_key }}"
+   region: "{{ region }}"
+   description: "allowing"
+   rules:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 0.0.0.0/0
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: 0.0.0.0/0
+   rules_egress:
+    - proto: all
+      cidr_ip: 0.0.0.0/0
+- name: Create an ec2 instance
+  ec2:
+   aws_access_key: "{{ aws_access_key }}"
+   aws_secret_key: "{{ aws_secret_key }}"
+   region: "{{ region }}"
+   key_name: "{{ keypair }}"
+   group: aws
+   instance_type: "{{ instance_type }}"
+   image: "{{ ami }}"
+   wait: true
+   count_tag:
+     Name: Demo1
+   instance_tags:
+     Name: Demo1
+  register: ec2
+
+

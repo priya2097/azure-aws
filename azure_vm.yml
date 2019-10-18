@@ -1,0 +1,9 @@
+---
+- name: installing azure
+  hosts: localhost
+  become: false
+  remote_user: root
+  gather_facts: false
+  roles:
+   - azure_vm_creation
+

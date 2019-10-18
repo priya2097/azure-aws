@@ -1,0 +1,15 @@
+---
+- name: installing html page
+  hosts:
+  tasks:
+   - name: installing httpd
+     yum:
+      name: httpd
+      state: latest
+   - name: start the service
+     service:
+      name: httpd
+      state: started
+   - copy:
+      src: index.html
+      dest: /var/www/html/index.html

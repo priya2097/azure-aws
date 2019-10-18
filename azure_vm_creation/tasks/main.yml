@@ -1,0 +1,59 @@
+---
+# tasks file for azure_vm_creation
+ - name: creating a resource group
+   azure_rm_resourcegroup:
+    name: myrg2
+    state: present
+    location: westus
+ - name: Create a virtual network
+   azure_rm_virtualnetwork:
+    resource_group: myrg2
+    name: myVirtualNetwork1
+    address_prefixes_cidr: "10.3.0.0/16"
+ - name: Create a subnet
+   azure_rm_subnet:
+    resource_group: myrg2
+    virtual_network_name: myVirtualNetwork1
+    name: mySubnet1
+    address_prefix_cidr: "10.3.0.0/24"
+ - name: Create VM
+   azure_rm_virtualmachine:
+    resource_group: myrg2
+    name: myvm1
+    vm_size: Standard_D1_v2
+    admin_username: cloud-user
+    # admin_password: "{{admin_password }}"
+    ssh_password_enabled: false
+    public_ip_allocation_method: Dynamic
+    open_ports:
+      - 22
+    ssh_public_keys:
+      - path: /home/cloud-user/.ssh/authorized_keys
+        key_data:  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCm29a3zTq47/z5aWU2qVyWHGliLrgva7aXd8rYB5O/280gqOrhiFWDkuHWyY5uMadeW7u267WytU5yvXvZYqxkN81OqKHQToUX4laC98l8vuJ033/ugXzoIBpZmHqMDLNhCf6I4T184Oz4ER0I/sQpvE/KOKn0ZB9ChI0u6zAt6T7Be4g7gZpPRcy/NWWRVwbzpN4TFWbgp2qvt2hCfQlGsvVMQZBxAXFh1vcgr+bZ6PARFoJNyigTeOTPp6pUgxaUpvxsanXeVnbq6FLqOpZ2v56KGa28JHxvpZUHKRLZIyOtpnfI17AFwvJtTGQcEIl/ysa+y+ld9v3ZIFp1fyE7 ansibleuser@ansibletower01.pdcloudex.com
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: '7.1'
+      version: latest
+    os_type: Linux
+   register: azure
+ - name: Log into the the tower
+   shell: tower-cli login admin --password pr0dev@ns987
+ - name: Add the Application hosts to the inventory
+   tower_host:
+    name: "{{ item }}"
+    inventory: "azure"
+    state: present
+    tower_host: '103.127.28.115'
+    tower_username: 'admin'
+    tower_password: 'pr0dev@ns987'
+    tower_verify_ssl: no
+    with_items:
+        - "{{ azure.id }}"
+ - name: wait for SSH to answer on all hosts
+   wait_for:
+    port: 22
+    host: "{{ azure.id }}"
+    timeout: 600
+    ignore_errors: yes
+

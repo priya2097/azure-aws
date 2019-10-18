@@ -1,0 +1,5 @@
+---
+- name: creating a aws vm
+  hosts: localhost
+  roles:
+   - aws_vm
