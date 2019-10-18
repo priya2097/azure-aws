@@ -2,7 +2,7 @@
 # tasks file for aws_v
 - name: ssh permission
   ec2_group:
-   name: aws
+   name: aws1
    aws_access_key: "{{ aws_access_key }}"
    aws_secret_key: "{{ aws_secret_key }}"
    region: "{{ region }}"
@@ -25,14 +25,14 @@
    aws_secret_key: "{{ aws_secret_key }}"
    region: "{{ region }}"
    key_name: "{{ keypair }}"
-   group: aws
+   group: aws1
    instance_type: "{{ instance_type }}"
    image: "{{ ami }}"
    wait: true
    count_tag:
-     Name: Demo1
+     Name: Demo2
    instance_tags:
-     Name: Demo1
+     Name: Demo2
   register: ec2
 
 
