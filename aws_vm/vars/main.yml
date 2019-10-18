@@ -4,6 +4,5 @@ region: "us-east-1"
 instance_type: "t2.micro"
 ami: "ami-0015b9ef68c77328d"
 keypair: "ansible123"
-aws_access_key: "AKIAINPYPKZA3K4NOCSQ"
-aws_secret_key: "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"
-
+aws_access_key: "AKIAIQCPL5MUINKJZBUA"
+aws_secret_key: "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"
